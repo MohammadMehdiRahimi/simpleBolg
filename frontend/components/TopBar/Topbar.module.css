@@ -1,0 +1,11 @@
+.rightTop,
+.leftTop,
+.centerTop {
+  flex: 2;
+}
+
+.rightTop img {
+  width: 45px !important;
+  height: 45px !important;
+}
+
