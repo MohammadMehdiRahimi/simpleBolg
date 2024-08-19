@@ -2,8 +2,8 @@ import React from "react";
 import style from "./TopBar.module.css";
 export default function TopBar() {
   return (
-    <div className="container-fluid sticky-top ">
-      <div className={"row align-items-center p-2 text-brown "}>
+    <div className="container-fluid sticky-top z-3 ">
+      <div className={"row align-items-center  text-brown " + style.backgroundTopBar}>
         <div className={"col-12 d-flex align-items-center " + style.top}>
           <div
             className={

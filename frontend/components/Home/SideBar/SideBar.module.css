@@ -1,0 +1,49 @@
+.SideBar {
+  flex: 2;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  flex-direction: column;
+  margin-right: 10px;
+  background: #f3f3f3;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.SideBarItem {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 20px !important;
+  gap: 15px;
+}
+.aboutMe img {
+  width: 70%;
+}
+.aboutMeText {
+  text-align: justify;
+}
+.title {
+  width: 80%;
+  justify-self: center;
+  padding: 10px;
+  text-align: center;
+  border-top: 1px solid #c5c5c5;
+  border-bottom: 1px solid #c5c5c5;
+  color: #9c9b9b;
+}
+
+.categoryList li {
+  display: inline-block;
+  width: 50%;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+
+.socialItem i {
+  color: #3a3939;
+  cursor: pointer;
+}
