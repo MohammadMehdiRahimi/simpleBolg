@@ -1,0 +1,116 @@
+@import url("./_fonts.css");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: IRANSansX;
+}
+:root {
+  --bg-body-color: #f5f6fa;
+  --bg-nav-color: white;
+  --bg-button: #4880ff;
+  --bg-button-hover: #163783;
+  --color-fonts: black;
+}
+[data-theme="light"] {
+  --bg-body-color: #f5f6fa;
+  --bg-nav-color: white;
+  --bg-button-hover: #163783;
+  --color-fonts: black;
+}
+[data-theme="dark"] {
+  --bg-body-color: #181616;
+  --bg-button: #4880ff;
+  --bg-button-hover: #163783;
+  --bg-nav-color: rgb(100, 100, 100);
+  --color-fonts: white;
+}
+p {
+  margin: 0;
+}
+.fs-10 {
+  font-size: 10px !important;
+}
+.fs-12 {
+  font-size: 12px !important;
+}
+.fs-14 {
+  font-size: 14px !important;
+}
+.fs-16 {
+  font-size: 16px !important;
+}
+.fs-18 {
+  font-size: 18px !important;
+}
+.fs-20 {
+  font-size: 20px !important;
+}
+.fs-22 {
+  font-size: 22px !important;
+}
+.fs-24 {
+  font-size: 24px !important;
+}
+.fs-26 {
+  font-size: 26px !important;
+}
+.fs-28 {
+  font-size: 28px !important;
+}
+.position-unset {
+  position: unset;
+}
+.position-left-0 {
+  left: 0 !important;
+}
+.position-right-0 {
+  right: 0 !important;
+}
+.position-top-0 {
+  top: 0% !important;
+}
+.position-bottom-0 {
+  bottom: 0 !important;
+}
+.fw-bolder {
+  font-weight: bolder;
+}
+.fw-bold {
+  font-weight: bold;
+}
+.mt-6 {
+  margin-top: 4rem;
+}
+.mt-7 {
+  margin-top: 6rem;
+}
+body {
+  background: var(--bg-body-color);
+}
+/* Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.activeSide {
+  background: var(--bg-button) !important;
+  color: white !important;
+}
+.activeSide::before {
+  content: "";
+  width: 10px;
+  height: 40px;
+  background: var(--bg-button);
+  border-radius: 10px;
+  position: absolute;
+  display: block;
+  right: -19%;
+  top: 0%;
+}
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
