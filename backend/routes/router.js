@@ -1,7 +1,9 @@
 import express from "express";
-import TaskController from "../controller/taskController.js";
+import Controller from "../controller/Controller.js";
 const router = express.Router();
-router.get("/" , )
-router.get("/students", TaskController.getStudents);
-router.post("/login" , TaskController.login)
+router.post("/register", Controller.register);
+router.post("/login", Controller.login);
+router.get("/dashboard", Controller.auth, (req, res) => {
+  return res.json("Helo");
+});
 export default router;

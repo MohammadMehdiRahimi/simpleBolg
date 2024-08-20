@@ -57,7 +57,7 @@ export default function Setting() {
                   className="d-none"
                 />
                 <label htmlFor="addProfile">
-                  <i class="fa-regular fa-pen-to-square"></i>
+                  <i className="fa-regular fa-pen-to-square"></i>
                 </label>
               </div>
             </div>

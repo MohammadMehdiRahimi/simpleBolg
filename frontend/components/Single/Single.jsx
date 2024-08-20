@@ -15,8 +15,8 @@ export default function Single() {
         <div className={" d-flex my-2   " + style.centerSection}>
           <h1>لورم ایپسوم متن ساختگی با تولید سادگی </h1>
           <div className={"  " + style.buttons}>
-            <i class="fa-regular fa-pen-to-square"></i>
-            <i class="fa-solid fa-trash"></i>
+            <i className="fa-regular fa-pen-to-square"></i>
+            <i className="fa-solid fa-trash"></i>
           </div>
         </div>
         <div

@@ -31,8 +31,8 @@ export default function SideBar() {
         <h4 className={"  " + style.title}> دنبال کردن</h4>
         <div className={"  " + style.socialItem}>
           <i className="fa-brands fa-instagram fs-24 mx-2"></i>
-          <i class="fa-brands fa-telegram fs-24 mx-2"></i>
-          <i class="fa-brands fa-twitter fs-24 mx-2"></i>
+          <i className="fa-brands fa-telegram fs-24 mx-2"></i>
+          <i className="fa-brands fa-twitter fs-24 mx-2"></i>
         </div>
       </div>
     </div>
