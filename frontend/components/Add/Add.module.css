@@ -1,0 +1,86 @@
+.wrapper {
+  height: 80vh;
+  position: relative;
+}
+.imageWrapper {
+  width: 100%;
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='4' ry='4' stroke='%23D4D4D4FF' stroke-width='9' stroke-dasharray='24' stroke-dashoffset='5' stroke-linecap='square'/%3e%3c/svg%3e");
+  border-radius: 4px;
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+.imageWrapper i {
+  font-size: 45px;
+  color: #d2d3d3ce;
+  margin-bottom: 15px;
+}
+.imageWrapper span {
+  font-size: 45px;
+  color: #d2d3d3ce;
+  margin-bottom: 15px;
+}
+.imageWrapper img {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+}
+
+
+.button button {
+  padding: 8px 18px;
+  border: none;
+  outline: none;
+  background: #70fff8;
+  border-radius: 10px;
+  margin-right: 10px;
+}
+.addTitle {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  align-items: center;
+  width: 100%;
+}
+.inputGroup {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.inputGroup input {
+  width: 80%;
+  height: 45px;
+  margin-right: 5px;
+  border: none;
+  background: #d2d3d38c;
+  border-radius: 8px;
+  padding: 5px 15px;
+}
+.inputGroup input:focus {
+  outline: none;
+}
+.inputGroup i {
+  border: 1px solid #d2d3d3ce !important;
+  padding: 5px;
+  font-size: 25px;
+  border-radius: 50%;
+}
+textarea {
+  width: 100%;
+  height: 130px !important;
+  height: fit-content;
+  padding: 10px;
+  overflow-y: visible;
+  outline: none;
+  border: none;
+  resize: none;
+  line-height: 35px;
+  border-radius: 10px;
+}

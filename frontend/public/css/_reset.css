@@ -180,3 +180,6 @@ input[type="number"] {
   padding-right: 0 !important;
   padding-left: 0 !important;
 }
+input:focus {
+  outline: none;
+}
