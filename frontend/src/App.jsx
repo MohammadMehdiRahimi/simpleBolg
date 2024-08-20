@@ -9,6 +9,8 @@ import Home from "../components/Home/Home.jsx";
 import Single from "../components/Single/Single.jsx";
 import Add from "../components/Add/Add.jsx";
 import Setting from "../components/Setting/Setting.jsx";
+import Login from "../components/Login/Login.jsx";
+import Register from "../components/Register/Register.jsx";
 export default function App() {
   return (
     <>
@@ -20,6 +22,8 @@ export default function App() {
             <Route path="/:postId" element={<Single />} />
             <Route path="/add" element={<Add />} />
             <Route path="/setting" element={<Setting />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Routes>
         </Router>
       </div>
