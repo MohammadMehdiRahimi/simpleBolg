@@ -1,8 +1,7 @@
 import React from "react";
 import style from "./Single.module.css";
 
-import SideBar from "../Home/SideBar/SideBar";
-
+import SideBar from "../Dashboard/SideBar/SideBar";
 export default function Single() {
   return (
     <div className="d-flex  ">

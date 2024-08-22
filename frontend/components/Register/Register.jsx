@@ -48,12 +48,11 @@ export default function Register() {
         if (response.data.success) {
           navigate("/dashboard");
         }
-        console.log(response.data);
       } catch (err) {
         const { response } = err;
-        console.log(response);
+
         const { data } = response;
-        console.log(data.success);
+
         if (data.success === undefined) {
           toast.error("ارتباط با سرور قطع است", {
             position: "top-right",
@@ -77,7 +76,6 @@ export default function Register() {
             theme: "light",
           });
         }
-        console.log(data);
       }
     } else {
       let toasti = "";

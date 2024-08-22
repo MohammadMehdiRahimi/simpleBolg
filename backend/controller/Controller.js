@@ -3,8 +3,6 @@ import bcrypt from "bcrypt";
 import Models from "../models/models.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
-import cookieParser from "cookie-parser";
-import { resolveSoa } from "dns";
 const { TJTJ } = process.env;
 export default class Controller {
   static async register(req, res) {
@@ -35,7 +33,7 @@ export default class Controller {
         message: "Email or UserName is already exist.",
       });
     const hashPass = await bcrypt.hash(pass, 10);
-    let addStatus = await Models.saveUser(email, userName, hashPass);
+    let addStatus = await Models.addUser(email, userName, hashPass);
     if (addStatus) {
       return res.json({
         success: true,
@@ -44,102 +42,20 @@ export default class Controller {
       });
     }
   }
-  // static async login(req, res) {
-  //   const { email, pass } = req.body;
-  //   const schema = Joi.object({
-  //     email: Joi.string().email().required(),
-  //     pass: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")).required(),
-  //   });
-  //   const { error } = schema.validate({
-  //     email,
-  //     pass,
-  //   });
-  //   if (error) {
-  //     return res.status(400).json({
-  //       success: false,
-  //       message: error.message,
-  //     });
-  //   }
-  //   try {
-  //     const user = await Models.getUser(email);
-  //     if (user.success) {
-  //       const truthPass = await bcrypt.compare(pass, user.body[0].password);
-  //       if (truthPass) {
-  //         try {
-  //           const token = await Models.getToken(user.body[0].id);
-  //           res.cookie("token", token);
-  //           res.json({
-  //             success: true,
-  //             body: {
-  //               token,
-  //               userName: user.body[0].userName,
-  //             },
-  //             message: "login true",
-  //           });
-  //         } catch (error) {
-  //           return res.status(400).json({
-  //             success: false,
-  //             message: error.message,
-  //           });
-  //         }
-  //       } else {
-  //         return res.status(400).json({
-  //           success: false,
-  //           message: "userName or password is incorrect",
-  //         });
-  //       }
-  //     } else {
-  //       return res.status(404).json({
-  //         success: false,
-  //         message: "userName or password is incorrect",
-  //       });
-  //     }
-  //   } catch (error) {
-  //     return res.status(400).json({ success: false, message: error.message });
-  //   }
-  // }
-
-  // static async auth(req, res, next) {
-  //   const authToken = req.cookies.token;
-  //   console.log(authToken);
-  //   if (authToken) {
-  //     const token = authToken.split(" ")[1];
-  //     jwt.verify(token, TJTJ, (err, user) => {
-  //       console.log(user);
-  //       if (err) {
-  //         return res
-  //           .status(403)
-  //           .json({ success: false, message: "Authentication failed" });
-  //       } else {
-  //         req.user = user;
-  //         next();
-  //       }
-  //     });
-  //   } else {
-  //     return res
-  //       .status(401)
-  //       .json({ success: false, message: "No token provided" });
-  //   }
-  // }
 
   static async login(req, res) {
     const { email, pass } = req.body;
-
-    // اعتبارسنجی ورودی‌ها
     const schema = Joi.object({
       email: Joi.string().email().required(),
       pass: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")).required(),
     });
-
     const { error } = schema.validate({ email, pass });
-
     if (error) {
       return res.status(400).json({
         success: false,
         message: error.message,
       });
     }
-
     try {
       // بررسی وجود کاربر
       const user = await Models.getUser(email);
@@ -158,15 +74,14 @@ export default class Controller {
           message: "Email or password is incorrect",
         });
       }
-
       // تولید توکن JWT و ارسال آن در کوکی
-      const token = await Models.getToken(user.body[0].id);
 
+      const token = await Models.getToken(user.body[0].userId);
       return res.json({
         success: true,
         body: {
           token,
-          userName: user.body[0].userName,
+          userId: user.body[0].id,
         },
         message: "Login successful",
       });
@@ -180,7 +95,6 @@ export default class Controller {
 
   static async auth(req, res, next) {
     const authToken = req.headers.token;
-    console.log(req.headers.token);
     if (authToken) {
       jwt.verify(authToken, TJTJ, (err, user) => {
         if (err) {
@@ -196,6 +110,74 @@ export default class Controller {
       return res
         .status(401)
         .json({ success: false, message: "No token provided" });
+    }
+  }
+  static async getAuth(req, res) {
+    const authToken = req.headers.token;
+    if (authToken) {
+      jwt.verify(authToken, TJTJ, (err, user) => {
+        if (err) {
+          return res
+            .status(403)
+            .json({ success: false, message: "Authentication failed" });
+        } else {
+          req.user = user;
+          return res.json({ access: true, body: user });
+        }
+      });
+    } else {
+      return res
+        .status(401)
+        .json({ success: false, message: "No token provided" });
+    }
+  }
+  static async getDetails(req, res) {
+    const { userId } = req.user;
+
+    if (userId) {
+      try {
+        const user = await Models.getUser(null, null, userId);
+
+        return res.json(user);
+      } catch (error) {
+        return res.json(error);
+      }
+    } else {
+      return res.json({ success: false, message: "Id is undefined" });
+    }
+  }
+  static async updateProfile(req, res) {
+    const profileImage = req.file ? req.file.filename : null;
+    let myObject = {};
+    if (req.body["password"]) {
+      req.body["password"] = await bcrypt.hash(req.body["password"], 10);
+    }
+    for (let element in req.body) {
+      if (req.body[element] !== "") {
+        myObject[element] = req.body[element];
+      }
+    }
+    if (profileImage) {
+      myObject.profile = profileImage;
+    }
+    try {
+      const response = await Models.updateUser(myObject);
+      if (response.user || response.users) {
+        return res.json({
+          success: true,
+          message: "Profile Updated",
+        });
+      } else {
+        return res.status(400).json({
+          success: false,
+          message: "profile can not updated",
+        });
+      }
+    } catch (error) {
+      return res.status(400).json({
+        success: false,
+        message: error.message,
+      });
     }
   }
 }

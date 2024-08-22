@@ -1,11 +1,25 @@
 import express from "express";
 import router from "./routes/router.js";
 import cors from "cors";
-import cookieParser from "cookie-parser";
-
+import multer from "multer";
+import path from "path";
+import { pathToFileURL } from "url";
+import { fileURLToPath } from "url";
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "*", // مجاز کردن همه منابع
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: "*",
+  })
+);
 app.use(express.json());
-app.use(cookieParser());
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(
+  "/profileImage",
+  express.static(path.join(__dirname, "File", "ProfileImage"))
+);
 app.use(router);
 app.listen(3000, () => console.log("listen at : http://localhost:3000"));

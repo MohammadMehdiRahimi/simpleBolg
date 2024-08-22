@@ -1,10 +1,17 @@
 import React from "react";
 import style from "./SideBar.module.css";
-
+import { Link } from "react-router-dom";
+import Setting from "../../Setting/Setting";
 export default function SideBar() {
   return (
     <div className={"col-2 mr-5 fs-14 " + style.SideBar}>
       <div className={"  " + style.aboutMe + " " + style.SideBarItem}>
+        <Link
+          className="align-self-start fs-18 text-brown cursor-pointer"
+          to="/setting"
+        >
+          <i className={"fa-regular fa-pen-to-square   " + style.editIcon}></i>
+        </Link>
         <h4 className={"  " + style.title}>درباره من</h4>
         <img
           src="https://th.bing.com/th/id/OIP.jf3W3MM5DiBiYes-e1C_qwHaIe?w=980&h=1121&rs=1&pid=ImgDetMain"
@@ -27,7 +34,7 @@ export default function SideBar() {
           <li>استایل</li>
         </ul>
       </div>
-      <div className={"  "  + " " + style.SideBarItem}>
+      <div className={"  " + " " + style.SideBarItem}>
         <h4 className={"  " + style.title}> دنبال کردن</h4>
         <div className={"  " + style.socialItem}>
           <i className="fa-brands fa-instagram fs-24 mx-2"></i>

@@ -4,18 +4,23 @@ import { tlds } from "@hapi/tlds";
 import { ToastContainer, toast } from "react-toastify";
 import Joi from "joi";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // استفاده از useNavigate برای ریدایرکت
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import style from "./Login.module.css";
-import { setToken, getToken } from "../Redux/auth/authSlice";
+import { setToken } from "../Redux/auth/authSlice";
 
 export default function Login() {
+  /* ---------------------------------- hooks and Variables --------------------------------- */
   const emailVal = useRef();
   const passwordVal = useRef();
-  const navigate = useNavigate(); // مقداردهی useNavigate
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
+  let loaclToken = localStorage.getItem("token");
+
+  /* -------------------------------- functions ------------------------------- */
+
   async function submitHandle(e) {
     e.preventDefault();
     let email = emailVal.current.value;
@@ -37,19 +42,35 @@ export default function Login() {
         const {
           data: { body },
         } = await axios.post("/login", { email, pass: password });
+        console.log(body);
         dispatch(setToken(body.token));
-        navigate("/dashboard"); // ریدایرکت به داشبورد پس از لاگین موفق
+        localStorage.setItem("token", body.token);
+
+        navigate("/setting");
       } catch (error) {
-        toast.error("Login failed. Please check your credentials.", {
-          position: "top-right",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        if (error.code === "ERR_NETWORK") {
+          toast.error("ارتباط با سرور قطع است", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        } else {
+          toast.error("نام کاربری یا رمز عبور اشتباه است", {
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
       }
     } else {
       let toasti = "";
@@ -64,6 +85,7 @@ export default function Login() {
         default:
           return;
       }
+
       toast.error(toasti, {
         position: "top-right",
         autoClose: 2000,
@@ -78,11 +100,27 @@ export default function Login() {
   }
 
   useEffect(() => {
-    if (token) {
-      console.log("Token after dispatch:", token);
-      // navigate("/dashboard"); // می‌توانید در اینجا ریدایرکت کنید
-    }
-  }, [token]);
+    const getAuth = async () => {
+      loaclToken = localStorage.getItem("token");
+      if (loaclToken) {
+        try {
+          const { data } = await axios.get("/auth", {
+            headers: { token: loaclToken },
+          });
+          console.log(loaclToken);
+
+          if (data.access) {
+            navigate("/setting");
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    getAuth();
+  }, [loaclToken, token]);
+
+  /* ------------------------------ page content ------------------------------ */
 
   return (
     <>
