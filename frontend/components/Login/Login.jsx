@@ -107,7 +107,7 @@ export default function Login() {
           const { data } = await axios.get("/auth", {
             headers: { token: loaclToken },
           });
-          console.log(loaclToken);
+  
 
           if (data.access) {
             navigate("/setting");

@@ -5,7 +5,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { tlds } from "@hapi/tlds";
 import { ToastContainer, toast } from "react-toastify";
-import image from "../../../backend/File/ProfileImage/sshot-11724263401774.png";
 export default function Setting() {
   const navigate = useNavigate();
   const newImageFile = useRef();
@@ -78,6 +77,36 @@ export default function Setting() {
       }
     }
   };
+
+  const deleteAccountHandle = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await axios.delete("/deleteaccount", {
+        headers: {
+          token,
+        },
+      });
+      if (data.success) {
+        toast("اکانت شما با موفقیت حذف شد", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+      localStorage.removeItem("token");
+      setTimeout(() => {
+        navigate("/login");
+      }, 3000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     const getAuth = async () => {
       try {
@@ -86,6 +115,7 @@ export default function Setting() {
             token,
           },
         });
+        console.log(token);
         if (!data.access) {
           navigate("/login");
         }
@@ -111,7 +141,6 @@ export default function Setting() {
           aboutVal.current.value = bodyObj.about;
           categoryVal.current.value = bodyObj.category;
           profile.current.src = `http://localhost:3000/profileImage/${bodyObj.profile}`;
-          console.log(profile.current.src);
         }
       } catch (error) {
         console.log(error);
@@ -135,7 +164,9 @@ export default function Setting() {
             }
           >
             <h1>تنظیمات پروفایل</h1>
-            <p className="cursor-pointer">حذف اکانت</p>
+            <p className="cursor-pointer" onClick={deleteAccountHandle}>
+              حذف اکانت
+            </p>
           </div>
           <form
             onSubmit={formSubmit}

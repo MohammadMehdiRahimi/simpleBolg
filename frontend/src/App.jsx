@@ -47,7 +47,7 @@
 // }
 
 import {
-  BrowserRouter as Router,
+
   Routes,
   Route,
   Navigate,
@@ -77,7 +77,7 @@ export default function App() {
     <CookiesProvider>
       <TopBar />
       <div className={" top-1 "}>
-        <Router>
+     
           <Routes>
             <Route path="/post/:postId" element={<Single />} />
             <Route path="/dashboard" element={<Dashboard />} />
@@ -88,7 +88,7 @@ export default function App() {
             <Route path="/not-found" element={<PageNotFound />} />
             {/* <Route path="*" element={<Navigate to="/not-found" />} /> */}
           </Routes>
-        </Router>
+    
       </div>
     </CookiesProvider>
   );

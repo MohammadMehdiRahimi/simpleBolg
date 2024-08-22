@@ -32,5 +32,6 @@ router.post(
   upload.single("profileImage"),
   Controller.updateProfile
 );
+router.delete("/deleteaccount", Controller.auth, Controller.deleteAccount);
 
 export default router;

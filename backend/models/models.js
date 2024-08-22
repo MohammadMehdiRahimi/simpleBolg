@@ -128,4 +128,17 @@ users INNER JOIN user ON users.userId = ? AND user.userId= ?;`;
     }
     return resualt;
   }
+  static async deleteUser(userId) {
+    let query = "DELETE FROM users WHERE userId= ?";
+    try {
+      try {
+        const response = await conn.query(query, [userId]);
+        return response;
+      } catch (error) {
+        return error;
+      }
+    } catch (error) {
+      return error;
+    }
+  }
 }

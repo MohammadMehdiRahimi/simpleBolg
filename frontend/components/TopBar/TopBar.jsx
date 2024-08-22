@@ -1,6 +1,15 @@
 import React from "react";
 import style from "./TopBar.module.css";
+import { useNavigate } from "react-router-dom";
 export default function TopBar() {
+  const navigate = useNavigate();
+  const topBarHandle = (e) => {
+    e.preventDefault();
+    if ((e.target.innerText = "خروج")) {
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
+  };
   return (
     <div className="container-fluid sticky-top z-3 ">
       <div
@@ -23,7 +32,10 @@ export default function TopBar() {
             />
           </div>
           <div className={" " + style.centerTop}>
-            <ul className="fs-16 d-flex  align-items-center  ">
+            <ul
+              className="fs-16 d-flex  align-items-center  "
+              onClick={topBarHandle}
+            >
               <li className={"cursor-pointer mx-4 mt-2 " + style.menuIcon}>
                 صفحه اصلی
               </li>

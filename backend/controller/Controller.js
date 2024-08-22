@@ -35,9 +35,10 @@ export default class Controller {
     const hashPass = await bcrypt.hash(pass, 10);
     let addStatus = await Models.addUser(email, userName, hashPass);
     if (addStatus) {
+      const token = await Models.getToken(addStatus[0].insertId);
       return res.json({
         success: true,
-        body: { id: addStatus[0].insertId },
+        body: { id: addStatus[0].insertId, token },
         message: "save user successfuly",
       });
     }
@@ -137,7 +138,9 @@ export default class Controller {
     if (userId) {
       try {
         const user = await Models.getUser(null, null, userId);
-
+        if (user.body[0].profile === "" || user.body[0].profile === null) {
+          user.body[0].profile = "global.png";
+        }
         return res.json(user);
       } catch (error) {
         return res.json(error);
@@ -175,6 +178,30 @@ export default class Controller {
       }
     } catch (error) {
       return res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+  static async deleteAccount(req, res) {
+    const { userId } = req.user;
+    console.log(userId);
+    try {
+      const [response] = await Models.deleteUser(userId);
+      console.log(response);
+      if (response.affectedRows > 0) {
+        return res.json({
+          success: true,
+          message: "Account deleted",
+        });
+      } else {
+        return res.json({
+          success: false,
+          message: "can not Account deleted",
+        });
+      }
+    } catch (error) {
+      return res.json({
         success: false,
         message: error.message,
       });

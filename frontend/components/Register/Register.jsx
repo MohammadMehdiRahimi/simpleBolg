@@ -20,7 +20,6 @@ export default function Register() {
     let userName = userNameVal.current.value;
     let pass = passVal.current.value;
     let confirmPass = confirmPassVal.current.value;
-
     const schema = Joi.object({
       email: Joi.string()
         .email({ tlds: { allow: tlds } })
@@ -46,13 +45,15 @@ export default function Register() {
           confirmPass,
         });
         if (response.data.success) {
+          localStorage.setItem("token", response.data.body.token);
+          console.log(response.data.body.token);
           navigate("/dashboard");
         }
       } catch (err) {
+        console.log(err);
         const { response } = err;
-
         const { data } = response;
-
+        console.log(data);
         if (data.success === undefined) {
           toast.error("ارتباط با سرور قطع است", {
             position: "top-right",
