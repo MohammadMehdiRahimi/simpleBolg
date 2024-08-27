@@ -14,12 +14,17 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(
   "/profileImage",
   express.static(path.join(__dirname, "File", "ProfileImage"))
+);
+app.use(
+  "/postImage",
+  express.static(path.join(__dirname, "File", "PostImage"))
 );
 app.use(router);
 app.listen(3000, () => console.log("listen at : http://localhost:3000"));

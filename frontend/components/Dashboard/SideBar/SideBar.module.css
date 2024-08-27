@@ -35,7 +35,9 @@
   border-bottom: 1px solid #c5c5c5;
   color: #9c9b9b;
 }
-
+.categoryList{
+  width: 100%;
+}
 .categoryList li {
   display: inline-block;
   width: 50%;

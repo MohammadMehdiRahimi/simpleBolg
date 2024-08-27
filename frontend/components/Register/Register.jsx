@@ -6,16 +6,19 @@ import axios from "axios";
 import { tlds } from "@hapi/tlds";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+import { setUserIn } from "../../Redux/auth/authSlice";
+import { useDispatch } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 export default function Register() {
   const emailVal = useRef();
   const userNameVal = useRef();
   const passVal = useRef();
   const confirmPassVal = useRef();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  async function submitHandler(e) {
+  const submitHandler = async (e) => {
     e.preventDefault();
+    console.log("helo");
     let email = emailVal.current.value;
     let userName = userNameVal.current.value;
     let pass = passVal.current.value;
@@ -38,15 +41,16 @@ export default function Register() {
 
     if (validate.error === undefined) {
       try {
-        const response = await axios.post("/register", {
+        const { data } = await axios.post("/register", {
           email,
           userName,
           pass,
           confirmPass,
         });
-        if (response.data.success) {
-          localStorage.setItem("token", response.data.body.token);
-          console.log(response.data.body.token);
+
+        if (data.success) {
+          localStorage.setItem("token", data.body.token);
+          dispatch(setUserIn(true));
           navigate("/dashboard");
         }
       } catch (err) {
@@ -108,12 +112,12 @@ export default function Register() {
         theme: "light",
       });
     }
-  }
+  };
   return (
     <>
       <div className={" " + style.wrapper}></div>;
       <div className={"col-4 offset-4 mt-5 rounded-4  " + style.container}>
-        <form action="" onSubmit={submitHandler}>
+        <form action="POST" onSubmit={submitHandler}>
           <h1> ثبت نام </h1>
           <div className={"  " + style.email}>
             <label htmlFor="email"> ایمیل </label>

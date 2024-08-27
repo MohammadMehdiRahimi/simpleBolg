@@ -1,8 +1,26 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import style from "./SideBar.module.css";
 import { Link } from "react-router-dom";
 import Setting from "../../Setting/Setting";
+import { useSelector } from "react-redux";
+
 export default function SideBar() {
+  const userName = useSelector((state) => state.profileDetails.userName);
+  const about = useSelector((state) => state.profileDetails.about);
+  const userIn = useSelector((state) => state.auth.userIn);
+  const profileImage = useSelector(
+    (state) => state.profileDetails.profileImage
+  );
+  let category = useSelector((state) => state.profileDetails.category);
+  category = `${category}`;
+  category = category.split(",");
+  const changeProfile = useSelector((state) => state.auth.changeProfile);
+  const image = useRef();
+  const aboutText = useRef();
+  useEffect(() => {
+    image.current.src = `http://localhost:3000/profileImage/${profileImage}`;
+    aboutText.current.innerText = about;
+  }, [userName, userIn]);
   return (
     <div className={"col-2 mr-5 fs-14 " + style.SideBar}>
       <div className={"  " + style.aboutMe + " " + style.SideBarItem}>
@@ -16,8 +34,9 @@ export default function SideBar() {
         <img
           src="https://th.bing.com/th/id/OIP.jf3W3MM5DiBiYes-e1C_qwHaIe?w=980&h=1121&rs=1&pid=ImgDetMain"
           alt=""
+          ref={image}
         />
-        <p className={style.aboutMeText}>
+        <p className={style.aboutMeText} ref={aboutText}>
           لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده
           از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و
           سطرآنچنان که لازم است
@@ -26,12 +45,9 @@ export default function SideBar() {
       <div className={"  " + " " + style.SideBarItem}>
         <h4 className={"  " + style.title}>علاقه مندی ها</h4>
         <ul className={style.categoryList}>
-          <li>زندگی سالم</li>
-          <li>موسیقی</li>
-          <li>ورزش</li>
-          <li>تکنولوژی</li>
-          <li>سینما</li>
-          <li>استایل</li>
+          {category && category.length > 0
+            ? category.map((item) => <li key={item}>{item}</li>)
+            : ""}
         </ul>
       </div>
       <div className={"  " + " " + style.SideBarItem}>

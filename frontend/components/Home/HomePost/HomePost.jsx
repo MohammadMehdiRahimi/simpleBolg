@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from "react";
-import style from "./Post.module.css";
+import style from "./HomePost.module.css";
 import axios from "axios";
 
-export default function Post({ data }) {
+export default function HomePost({ data }) {
   let { category, text, time, title, postImage, postId } = data;
-
   if (postImage === null) {
     postImage = "global.png";
   }

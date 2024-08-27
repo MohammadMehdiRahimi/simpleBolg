@@ -5,11 +5,11 @@ const { TJTJ } = process.env;
 export default class Models {
   static async getUser(email, userName, userId) {
     let query;
-
     if (email !== null) {
       query = "SELECT * FROM users WHERE email = ? ";
       try {
         let [user] = await conn.query(query, [email]);
+
         if (user.length > 0) {
           return { success: true, body: user };
         } else {
@@ -36,6 +36,7 @@ user.userAbout As about ,  user.category As category , user.profile As profile  
 users INNER JOIN user ON users.userId = ? AND user.userId= ?;`;
       try {
         let [user] = await conn.query(query, [userId, userId]);
+
         if (user.length > 0) {
           return { success: true, body: user };
         } else {
@@ -47,20 +48,50 @@ users INNER JOIN user ON users.userId = ? AND user.userId= ?;`;
     }
   }
   static async addUser(email, userName, pass) {
-    const query =
-      "INSERT INTO users(email , userName , password) VALUES(? , ? ,?)";
+    let query = `INSERT INTO users(email , userName , password) VALUES(? , ? ,?);`;
+    let result = {};
     let addStatus;
     try {
       addStatus = await conn.query(query, [email, userName, pass]);
-      return addStatus;
+
+      if (addStatus[0].insertId > 0) {
+        result.userId = addStatus[0].insertId;
+        result.usersDb = true;
+        query = `INSERT INTO user(userId) VALUES(?);`;
+        try {
+          addStatus = await conn.query(query, [result.userId]);
+          if (addStatus[0].insertId > 0) {
+            result.userDB = true;
+            try {
+              query = `INSERT INTO posts(userId) VALUES(?);`;
+              addStatus = await conn.query(query, [result.userId]);
+
+              if (addStatus[0].insertId > 0) {
+                result.postsDb = true;
+                return { success: true, result };
+              } else {
+                return { success: false, message: "can not add in userDB" };
+              }
+            } catch (error) {
+              return { sucess: false, message: error.message + "posts" };
+            }
+          } else {
+            return { success: false, message: "can not add in userDB" };
+          }
+        } catch (error) {
+          return { sucess: false, message: error.message + "user" };
+        }
+      } else {
+        return { success: false, message: "can not add in usersDB" };
+      }
     } catch (error) {
-      return error.message;
+      return { sucess: false, message: error.message + "users" };
     }
   }
   static async getToken(userId) {
     const token = jwt.sign({ userId }, TJTJ, {
       noTimestamp: true,
-      expiresIn: "1h",
+      expiresIn: "1d",
     });
     return token;
   }
@@ -137,6 +168,95 @@ users INNER JOIN user ON users.userId = ? AND user.userId= ?;`;
       } catch (error) {
         return error;
       }
+    } catch (error) {
+      return error;
+    }
+  }
+  static async getPosts(userId, postId) {
+    if (userId != null) {
+      const query = "SELECT * FROM posts WHERE userId = ? ;";
+      try {
+        const [posts] = await conn.query(query, [userId]);
+        return posts;
+      } catch (error) {
+        return error;
+      }
+    } else if (postId !== null) {
+      const query = "SELECT * FROM posts WHERE postId = ? ;";
+      try {
+        const [post] = await conn.query(query, [postId]);
+        return post;
+      } catch (error) {
+        return error;
+      }
+    } else {
+      try {
+        const query = "SELECT * FROM posts ;";
+        try {
+          const [posts] = await conn.query(query);
+          return posts;
+        } catch (error) {
+          return error;
+        }
+      } catch (error) {
+        return error;
+      }
+    }
+  }
+  static async deletePost(postid) {
+    const query = "DELETE FROM posts WHERE postId= ?";
+    try {
+      const response = await conn.query(query, [postid]);
+      return response;
+    } catch (error) {
+      return error;
+    }
+  }
+  static async addPost(userId, title, text, postImage, postId) {
+    if (postId === undefined) {
+      const query =
+        "INSERT INTO posts(userId , title , text , postImage ) Values(? , ? , ? ,?);";
+      try {
+        const result = await conn.query(query, [
+          userId,
+          title,
+          text,
+          postImage,
+        ]);
+        return result;
+      } catch (error) {
+        return error;
+      }
+    } else {
+      const query =
+        "UPDATE posts SET userId = ?,title = ?  ,text= ? , postImage = ? WHERE postID = ?;";
+      try {
+        const result = await conn.query(query, [
+          userId,
+          title,
+          text,
+          postImage,
+          postId,
+        ]);
+        return result;
+      } catch (error) {
+        return error;
+      }
+    }
+  }
+  static async getUserName(postId) {
+    try {
+      let query = `SELECT userId FROM posts WHERE postId = ?;  `;
+      const [[{ userId }]] = await conn.query(query, [postId]);
+
+      try {
+        query = "SELECT userName FROM users WHERE userId = ? ;";
+        const [[{ userName }]] = await conn.query(query, [userId]);
+        return userName;
+      } catch (error) {
+        return error;
+      }
+      return userId;
     } catch (error) {
       return error;
     }

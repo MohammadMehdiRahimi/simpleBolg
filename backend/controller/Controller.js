@@ -4,6 +4,7 @@ import Models from "../models/models.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 const { TJTJ } = process.env;
+
 export default class Controller {
   static async register(req, res) {
     const { email, userName, pass, confirmPass } = req.body;
@@ -33,14 +34,25 @@ export default class Controller {
         message: "Email or UserName is already exist.",
       });
     const hashPass = await bcrypt.hash(pass, 10);
-    let addStatus = await Models.addUser(email, userName, hashPass);
-    if (addStatus) {
-      const token = await Models.getToken(addStatus[0].insertId);
-      return res.json({
-        success: true,
-        body: { id: addStatus[0].insertId, token },
-        message: "save user successfuly",
-      });
+    try {
+      let addStatus = await Models.addUser(email, userName, hashPass);
+
+      if (addStatus.success) {
+        try {
+          const token = await Models.getToken(addStatus.result.userId);
+          return res.json({
+            success: true,
+            body: { id: addStatus.result.userId, token },
+            message: "save user successfuly",
+          });
+        } catch (error) {
+          return res.json({ error });
+        }
+      } else {
+        return res.json({ success: false, message: "add status is not found" });
+      }
+    } catch (error) {
+      return res.json({ error });
     }
   }
 
@@ -141,7 +153,8 @@ export default class Controller {
         if (user.body[0].profile === "" || user.body[0].profile === null) {
           user.body[0].profile = "global.png";
         }
-        return res.json(user);
+
+        return res.json({ success: true, body: user });
       } catch (error) {
         return res.json(error);
       }
@@ -185,10 +198,10 @@ export default class Controller {
   }
   static async deleteAccount(req, res) {
     const { userId } = req.user;
-    console.log(userId);
+
     try {
       const [response] = await Models.deleteUser(userId);
-      console.log(response);
+
       if (response.affectedRows > 0) {
         return res.json({
           success: true,
@@ -205,6 +218,128 @@ export default class Controller {
         success: false,
         message: error.message,
       });
+    }
+  }
+  static async deletePost(req, res) {
+    try {
+      const [response] = await Models.deletePost(req.headers.postid);
+      if (response.affectedRows > 0) {
+        return res.json({
+          success: true,
+          message: "post deleted",
+        });
+      } else {
+        return res.json({
+          success: false,
+          message: "can not post deleted",
+        });
+      }
+    } catch (error) {
+      return res.json({
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+  static async getUserPosts(req, res) {
+    const { userId } = req.user;
+    let newPost;
+    try {
+      const posts = await Models.getPosts(userId);
+
+      if (req.headers.postid) {
+        newPost = posts.find((item) => item.postId == req.headers.postid);
+        return res.json({
+          success: true,
+          body: newPost,
+          message: "get user posts done",
+        });
+      } else {
+        return res.json({
+          success: true,
+          body: posts,
+          message: "get user posts done",
+        });
+      }
+    } catch (error) {
+      return res.json({
+        success: false,
+        message: "can not get posts",
+      });
+    }
+  }
+  static async editPost(req, res) {
+    const { text, title, postId } = req.body;
+    const { userId } = req.user;
+
+    try {
+      const [editPostStatus] = await Models.addPost(
+        userId,
+        title,
+        text,
+        req.file.filename,
+        postId
+      );
+      if (editPostStatus.affectedRows > 0) {
+        return res.json({ success: true, message: "Post Updated" });
+      }
+    } catch (error) {
+      return res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+  static async getAllPosts(req, res) {
+    try {
+      const posts = await Models.getPosts(null, null);
+
+      if (posts.length > 0) {
+        return res.json({ success: true, body: posts });
+      } else {
+        return res.json({ success: false, message: posts });
+      }
+    } catch (error) {
+      return res.json({ success: false, message: error.message });
+    }
+  }
+  static async getSinglePost(req, res) {
+    const postId = req.headers.postid;
+
+    try {
+      const post = await Models.getPosts(null, postId);
+      return res.json({ success: true, body: post, message: "get post done" });
+    } catch (error) {
+      return res.json({ success: false, message: error.message });
+    }
+  }
+  static async getAuthor(req, res) {
+    const postid = req.headers.postid;
+    try {
+      const resualt = await Models.getUserName(postid);
+      return res.json({ success: true, body: resualt });
+    } catch (error) {
+      return res.json({ success: false, message: error.message });
+    }
+  }
+  static async addPost(req, res) {
+    const { userId } = req.user;
+    const { title, text } = req.body;
+    try {
+      const [result] = await Models.addPost(
+        userId,
+        title,
+        text,
+        req.file.filename
+      );
+ 
+      if (result.affectedRows > 0) {
+        return res.json({ success: true, body: { postId: result.insertId } });
+      } else {
+        return res.json({ success: false, body: result });
+      }
+    } catch (error) {
+      return res.json({ success: false, message: error });
     }
   }
 }

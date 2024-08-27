@@ -5,6 +5,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { tlds } from "@hapi/tlds";
 import { ToastContainer, toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { setChangeProfile, setUserIn } from "../../Redux/auth/authSlice.js";
+
 export default function Setting() {
   const navigate = useNavigate();
   const newImageFile = useRef();
@@ -15,13 +18,13 @@ export default function Setting() {
   const aboutVal = useRef();
   const categoryVal = useRef();
   const profile = useRef();
+  const dispatch = useDispatch();
   const [userId, setUserID] = useState(null);
   const token = localStorage.getItem("token");
-
+  const changeProfile = useSelector((state) => state.auth.changeProfile);
   const formSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-
     if (passwordVal.current.value !== confirmPasswordVal.current.value) {
       toast.error(" رمز عبور و تکرار رمز عبور یکسان نیست ! ", {
         position: "top-right",
@@ -71,13 +74,14 @@ export default function Setting() {
             progress: undefined,
             theme: "light",
           });
+          dispatch(setChangeProfile(true));
         }
       } catch (error) {
         console.log(error);
       }
     }
   };
-
+  console.log(changeProfile);
   const deleteAccountHandle = async (e) => {
     e.preventDefault();
     try {
@@ -120,6 +124,7 @@ export default function Setting() {
           navigate("/login");
         }
         setUserID(data.body.userId);
+        dispatch(setUserIn(true));
       } catch (error) {
         navigate("/login");
       }
@@ -129,13 +134,12 @@ export default function Setting() {
     }
     const getDetails = async () => {
       try {
-        const {
-          data: { body, success },
-        } = await axios.get("/details", {
+        const { data } = await axios.get("/details", {
           headers: { token },
         });
-        if (success) {
-          let [bodyObj] = body;
+        console.log(data.body);
+        if (data.body.success) {
+          let [bodyObj] = data.body.body;
           userNameVal.current.value = bodyObj.userName;
           emailVal.current.value = bodyObj.email;
           aboutVal.current.value = bodyObj.about;
@@ -147,7 +151,7 @@ export default function Setting() {
       }
     };
     getDetails();
-  }, [token]);
+  }, [token, changeProfile]);
 
   return (
     <div className="container">

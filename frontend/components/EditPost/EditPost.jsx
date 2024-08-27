@@ -1,14 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-import style from "./Add.module.css";
-import { useNavigate } from "react-router-dom";
+import style from "./EditPost.module.css";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { tlds } from "@hapi/tlds";
-import { useDispatch } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
-import { setUserIn } from "../../Redux/auth/authSlice";
 export default function EditPost() {
   const [postImage, setPostImage] = useState(null);
-  const dispatch = useDispatch();
+  const { postid } = useParams();
   const image = useRef();
   const title = useRef();
   const text = useRef();
@@ -16,17 +14,18 @@ export default function EditPost() {
   const navigate = useNavigate();
   const submitHandle = async (event) => {
     event.preventDefault();
+    console.log(image.current.files[0]);
     const formData = new FormData();
     formData.append("title", title.current.value);
     formData.append("text", text.current.value);
     formData.append("postImage", image.current.files[0]);
+    formData.append("postId", postid);
     try {
-      const { data } = await axios.post("/post/add", formData, {
+      const { data } = await axios.put("/user/posts/edit", formData, {
         headers: { token: localStorage.getItem("token") },
       });
-      console.log(data);
       if (data.success) {
-        toast("پست با موفقیت ارسال  شد.", {
+        toast("پست با موفقیت ویرایش  شد.", {
           position: "top-right",
           autoClose: 2000,
           hideProgressBar: false,
@@ -36,7 +35,6 @@ export default function EditPost() {
           progress: undefined,
           theme: "light",
         });
-        navigate("/dashboard");
       }
     } catch (error) {
       console.log(error);
@@ -50,10 +48,6 @@ export default function EditPost() {
             token: localStorage.getItem("token"),
           },
         });
-        console.log(data);
-        if (data.access) {
-          dispatch(setUserIn(true));
-        }
       } catch (error) {
         toast.error("زمان به پایان رسید لطفا دوباره وارد شوید.", {
           position: "top-right",
@@ -71,6 +65,55 @@ export default function EditPost() {
       }
     };
     getAuth();
+
+    const getPost = async () => {
+      try {
+        const { data } = await axios.get("/user/posts", {
+          headers: {
+            token: localStorage.getItem("token"),
+            postid,
+          },
+        });
+        if (data.success) {
+          title.current.value = data.body.title;
+          text.current.value = data.body.text;
+          if (data.body.postImage != null) {
+            console.log(data.body.postImage);
+            setPostImage(data.body.postImage);
+            document.getElementById("showImage").innerHTML = `
+              <input
+            type="file"
+            name="addFile"
+            id="addFile"
+            class="d-none"
+            ref={image}
+          />
+            <label htmlFor="addFile" class={" cursor-pointer  " + style.imageWrapper}>
+                <img src="http://localhost:3000/postImage/${data.body.postImage}" class="w-100" alt=""  />
+              </label>`;
+            console.log(document.getElementById("showImage"));
+          }
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error("مشخصات پست به درستی بارگیری نمی شود", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        setTimeout(() => {
+          // navigate("/dashboard");
+        }, [2000]);
+      }
+    };
+    if (postid) {
+      getPost();
+    }
   }, []);
   return (
     <div className="container">

@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import style from "./Login.module.css";
-import { setToken } from "../Redux/auth/authSlice";
+import { setToken } from "../../Redux/auth/authSlice";
 
 export default function Login() {
   /* ---------------------------------- hooks and Variables --------------------------------- */
@@ -107,10 +107,9 @@ export default function Login() {
           const { data } = await axios.get("/auth", {
             headers: { token: loaclToken },
           });
-  
 
           if (data.access) {
-            navigate("/setting");
+            navigate("/dashboard");
           }
         } catch (error) {
           console.log(error);
@@ -139,7 +138,7 @@ export default function Login() {
           </div>
           <div className={"d-flex flex-row  " + style.button}>
             <div className={"  " + style.goToRegister}>
-              <p>حساب کاربری ندارید؟</p>
+              <p onClick={() => navigate("/register")}>حساب کاربری ندارید؟</p>
             </div>
             <button
               onClick={submitHandle}
