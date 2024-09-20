@@ -44,7 +44,7 @@ export default function TopBar() {
         });
 
         if (data.body.success) {
-          console.log(data.body);
+
           const { email, about, category, profile, userName, userId } =
             data.body.body[0];
           dispatch(setEmail(email));

@@ -81,7 +81,7 @@ export default function Setting() {
       }
     }
   };
-  console.log(changeProfile);
+
   const deleteAccountHandle = async (e) => {
     e.preventDefault();
     try {
@@ -119,7 +119,7 @@ export default function Setting() {
             token,
           },
         });
-        console.log(token);
+
         if (!data.access) {
           navigate("/login");
         }
@@ -137,7 +137,7 @@ export default function Setting() {
         const { data } = await axios.get("/details", {
           headers: { token },
         });
-        console.log(data.body);
+
         if (data.body.success) {
           let [bodyObj] = data.body.body;
           userNameVal.current.value = bodyObj.userName;

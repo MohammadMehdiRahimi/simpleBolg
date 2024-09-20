@@ -24,8 +24,7 @@ export default function EditPost() {
       const { data } = await axios.post("/post/add", formData, {
         headers: { token: localStorage.getItem("token") },
       });
-      console.log(data);
-      if (data.success) {
+    if (data.success) {
         toast("پست با موفقیت ارسال  شد.", {
           position: "top-right",
           autoClose: 2000,
@@ -50,7 +49,7 @@ export default function EditPost() {
             token: localStorage.getItem("token"),
           },
         });
-        console.log(data);
+
         if (data.access) {
           dispatch(setUserIn(true));
         }

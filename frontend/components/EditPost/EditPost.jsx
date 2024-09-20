@@ -14,7 +14,7 @@ export default function EditPost() {
   const navigate = useNavigate();
   const submitHandle = async (event) => {
     event.preventDefault();
-    console.log(image.current.files[0]);
+
     const formData = new FormData();
     formData.append("title", title.current.value);
     formData.append("text", text.current.value);
@@ -78,7 +78,7 @@ export default function EditPost() {
           title.current.value = data.body.title;
           text.current.value = data.body.text;
           if (data.body.postImage != null) {
-            console.log(data.body.postImage);
+
             setPostImage(data.body.postImage);
             document.getElementById("showImage").innerHTML = `
               <input
@@ -91,7 +91,7 @@ export default function EditPost() {
             <label htmlFor="addFile" class={" cursor-pointer  " + style.imageWrapper}>
                 <img src="http://localhost:3000/postImage/${data.body.postImage}" class="w-100" alt=""  />
               </label>`;
-            console.log(document.getElementById("showImage"));
+    
           }
         }
       } catch (error) {

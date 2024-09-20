@@ -26,12 +26,11 @@ const storagePost = multer.diskStorage({
   destination: (req, file, cb) => {
     try {
       const dir = path.join(__dirname, "..", "File", "PostImage");
-      console.log("Destination directory: ", dir); // بررسی مسیر پوشه
-      // در اینجا می‌توانید از fs.access برای بررسی دسترسی به پوشه استفاده کنید
+
       fs.access(dir, fs.constants.W_OK, (err) => {
         if (err) {
           console.error("Directory is not writable or does not exist: ", err);
-          return cb(err); // بازگرداندن خطا به callback
+          return cb(err); 
         }
         cb(null, dir);
       });
@@ -45,7 +44,6 @@ const storagePost = multer.diskStorage({
       file.originalname.split(".")[0] +
       Date.now() +
       path.extname(file.originalname);
-    console.log("Generated filename: ", filename); // بررسی نام فایل تولید شده
     cb(null, filename);
   },
 });

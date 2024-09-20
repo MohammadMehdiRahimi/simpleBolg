@@ -3,7 +3,8 @@ import bcrypt from "bcrypt";
 import Models from "../models/models.js";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
-const { TJTJ } = process.env;
+const TJTJ = process.env.TJTJ;
+
 
 export default class Controller {
   static async register(req, res) {
@@ -40,13 +41,15 @@ export default class Controller {
       if (addStatus.success) {
         try {
           const token = await Models.getToken(addStatus.result.userId);
+  
           return res.json({
             success: true,
             body: { id: addStatus.result.userId, token },
             message: "save user successfuly",
           });
         } catch (error) {
-          return res.json({ error });
+    
+          return res.json({ body: error.message });
         }
       } else {
         return res.json({ success: false, message: "add status is not found" });
@@ -332,7 +335,7 @@ export default class Controller {
         text,
         req.file.filename
       );
- 
+
       if (result.affectedRows > 0) {
         return res.json({ success: true, body: { postId: result.insertId } });
       } else {

@@ -19,7 +19,7 @@ export default function Post({ data }) {
     const getUserName = async () => {
       try {
         const { data } = await axios.get("/author", { headers: { postId } });
-        console.log(data);
+
         if (data.success) {
           creator.current.innerText = `نویسنده : ${data.body}`;
         }

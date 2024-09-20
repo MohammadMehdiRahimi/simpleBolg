@@ -18,7 +18,6 @@ export default function Register() {
   const navigate = useNavigate();
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.log("helo");
     let email = emailVal.current.value;
     let userName = userNameVal.current.value;
     let pass = passVal.current.value;
@@ -54,10 +53,10 @@ export default function Register() {
           navigate("/dashboard");
         }
       } catch (err) {
-        console.log(err);
+
         const { response } = err;
         const { data } = response;
-        console.log(data);
+
         if (data.success === undefined) {
           toast.error("ارتباط با سرور قطع است", {
             position: "top-right",

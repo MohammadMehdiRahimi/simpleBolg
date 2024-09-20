@@ -20,7 +20,7 @@ export default function Home() {
         if (data.success) {
           setPosts(data.body);
         } else {
-          console.log(data);
+     
         }
       } catch (error) {
         toast.error(error.message, {
@@ -42,7 +42,7 @@ export default function Home() {
             token: localStorage.getItem("token"),
           },
         });
-        console.log(token);
+
         if (data.access) {
           dispatch(setUserIn(true));
         }
